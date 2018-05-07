@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  server:
+    build: server
+    volumes:
+      - ./config:/home/trinity/server/etc
+      - ./game:/home/trinity/game
+      - ./data:/home/trinity/server/data
+    command: tail -f /dev/null
+    ports:
+      - 8085:8085
+      - 8086:8086
+      - 8081:8081
+      - 3724:3724
+      - 1119:1119
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    networks:
+      - net
+
+  mysql:
+    image: mysql:5.6
+    ports:
+      - 3306:3306
+    volumes:
+      - ./tdb:/docker-entrypoint-initdb.d
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
